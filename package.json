@@ -2,6 +2,10 @@
     "name": "go-it-project",
     "version": "1.0.0",
     "main": "index.ts",
+    "author": {
+        "name": "Vladimir",
+        "email": "kazamov@gmail.com"
+    },
     "scripts": {
         "start": "expo start",
         "android": "expo start --android",
