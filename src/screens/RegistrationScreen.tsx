@@ -7,7 +7,7 @@ import {
     Pressable,
     Keyboard,
     Platform,
-    Image,
+    ImageBackground,
 } from 'react-native';
 
 import { globalColorVariables } from '@/styles/variables';
@@ -44,11 +44,10 @@ export default function RegistrationScreen() {
 
     return (
         <Pressable style={styles.screen} onPress={Keyboard.dismiss}>
-            <>
-                <Image
-                    source={AuthBackgroundImg}
-                    style={styles.screenBackgroundImage}
-                />
+            <ImageBackground
+                source={AuthBackgroundImg}
+                style={styles.screenBackgroundImage}
+            >
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.keyboardAvoidingContainer}
@@ -94,7 +93,7 @@ export default function RegistrationScreen() {
                         </View>
                     </View>
                 </KeyboardAvoidingView>
-            </>
+            </ImageBackground>
         </Pressable>
     );
 }
@@ -109,11 +108,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     screenBackgroundImage: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        height: '100%',
-        width: '100%',
+        flex: 1,
     },
     contentContainer: {
         height: 549,
