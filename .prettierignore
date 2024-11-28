@@ -4,3 +4,5 @@ ios/
 .expo/
 dist/
 build/
+.husky
+yarn.lock
