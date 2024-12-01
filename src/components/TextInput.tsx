@@ -1,15 +1,18 @@
 import {
     TextInput as RNTextInput,
-    TextInputProps,
+    TextInputProps as RNTextInputProps,
     StyleSheet,
 } from 'react-native';
 
 import { globalColorVariables } from '@/styles/variables';
 import { useState } from 'react';
 
+export type TextInputProps = RNTextInputProps & { invalid?: boolean };
+
 export default function TextInput({
     style,
     placeholderTextColor,
+    invalid,
     onFocus,
     onBlur,
     ...props
@@ -19,7 +22,12 @@ export default function TextInput({
     return (
         <RNTextInput
             {...props}
-            style={[styles.textInput, style, isFocused && styles.focused]}
+            style={[
+                styles.textInput,
+                style,
+                invalid && !isFocused && styles.invalid,
+                isFocused && styles.focused,
+            ]}
             placeholderTextColor={
                 placeholderTextColor ?? globalColorVariables.gray3
             }
@@ -52,6 +60,9 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         letterSpacing: 0,
         color: globalColorVariables.inputText,
+    },
+    invalid: {
+        borderColor: globalColorVariables.invalid,
     },
     focused: {
         backgroundColor: globalColorVariables.white,

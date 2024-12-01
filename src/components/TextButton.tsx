@@ -9,7 +9,7 @@ import { globalColorVariables } from '@/styles/variables';
 
 interface TextButtonProps {
     label: string;
-    onPress: () => void;
+    onPress?: () => void;
     style?: StyleProp<ViewStyle>;
 }
 

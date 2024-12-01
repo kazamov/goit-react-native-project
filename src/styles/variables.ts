@@ -6,4 +6,5 @@ export const globalColorVariables = {
     inputText: '#212121',
     primary: '#FF6C00',
     textButton: '#1B4371',
+    invalid: 'red',
 };

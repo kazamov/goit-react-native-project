@@ -1,6 +1,6 @@
-import { TextInputProps, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import TextInput from './TextInput';
+import TextInput, { TextInputProps } from './TextInput';
 import { useState } from 'react';
 import TextButton from './TextButton';
 

@@ -7,12 +7,11 @@ import {
 } from '@expo-google-fonts/roboto';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-
-import RegistrationScreen from './screens/RegistrationScreen';
+import { Stack } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function App() {
+export default function RootLayout() {
     const [loaded, error] = useFonts({
         Roboto_300Light,
         Roboto_400Regular,
@@ -30,5 +29,10 @@ export default function App() {
         return null;
     }
 
-    return <RegistrationScreen />;
+    return (
+        <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(home)" options={{ headerShown: true }} />
+        </Stack>
+    );
 }
