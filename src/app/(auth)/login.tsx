@@ -7,6 +7,7 @@ import TextButton from '@/components/TextButton';
 import TextInput from '@/components/TextInput';
 import { Controller, useForm } from 'react-hook-form';
 import FormField from '@/components/FormField';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginFormState {
     email: string;
@@ -22,8 +23,11 @@ export default function LoginScreen() {
         mode: 'onSubmit',
     });
 
+    const { login } = useAuth();
+
     const onSubmit = (data: LoginFormState) => {
         console.log(data);
+        login();
     };
 
     return (

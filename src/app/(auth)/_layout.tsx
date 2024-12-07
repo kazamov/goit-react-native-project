@@ -7,7 +7,7 @@ import {
     ImageBackground,
 } from 'react-native';
 import { Slot, usePathname } from 'expo-router';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { globalColorVariables } from '@/styles/variables';
 
@@ -17,29 +17,27 @@ export default function AuthLayout() {
     const pathname = usePathname();
 
     return (
-        <SafeAreaProvider>
-            <Pressable style={styles.screen} onPress={Keyboard.dismiss}>
-                <ImageBackground
-                    source={AuthBackgroundImg}
-                    style={styles.screenBackgroundImage}
+        <Pressable style={styles.screen} onPress={Keyboard.dismiss}>
+            <ImageBackground
+                source={AuthBackgroundImg}
+                style={styles.screenBackgroundImage}
+            >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={styles.keyboardAvoidingContainer}
+                    keyboardVerticalOffset={
+                        pathname === '/registration' ? -180 : -240
+                    }
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.keyboardAvoidingContainer}
-                        keyboardVerticalOffset={
-                            pathname === '/registration' ? -180 : -240
-                        }
+                    <SafeAreaView
+                        style={styles.contentContainer}
+                        edges={['bottom']}
                     >
-                        <SafeAreaView
-                            style={styles.contentContainer}
-                            edges={['bottom']}
-                        >
-                            <Slot />
-                        </SafeAreaView>
-                    </KeyboardAvoidingView>
-                </ImageBackground>
-            </Pressable>
-        </SafeAreaProvider>
+                        <Slot />
+                    </SafeAreaView>
+                </KeyboardAvoidingView>
+            </ImageBackground>
+        </Pressable>
     );
 }
 

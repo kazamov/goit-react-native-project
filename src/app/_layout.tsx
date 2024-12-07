@@ -7,7 +7,9 @@ import {
 } from '@expo-google-fonts/roboto';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Slot } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,20 +21,27 @@ export default function RootLayout() {
         Roboto_700Bold,
     });
 
+    const { isAuthenticated } = useAuth();
+
     useEffect(() => {
-        if (loaded || error) {
+        if (loaded || error || isAuthenticated !== null) {
             SplashScreen.hideAsync();
         }
-    }, [loaded, error]);
+    }, [loaded, error, isAuthenticated]);
 
     if (!loaded && !error) {
         return null;
     }
 
+    if (isAuthenticated === null) {
+        return null;
+    }
+
     return (
-        <Stack>
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(home)" options={{ headerShown: true }} />
-        </Stack>
+        <SafeAreaProvider>
+            <AuthProvider>
+                <Slot />
+            </AuthProvider>
+        </SafeAreaProvider>
     );
 }

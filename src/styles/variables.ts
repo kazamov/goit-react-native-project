@@ -7,4 +7,5 @@ export const globalColorVariables = {
     primary: '#FF6C00',
     textButton: '#1B4371',
     invalid: 'red',
+    splitLine: 'rgba(0, 0, 0, 0.3)',
 };

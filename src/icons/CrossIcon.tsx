@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Svg, { SvgProps, Circle, Path } from 'react-native-svg';
 
 import { globalColorVariables } from '@/styles/variables';
