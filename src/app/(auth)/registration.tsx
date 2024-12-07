@@ -9,6 +9,7 @@ import TextButton from '@/components/TextButton';
 import TextInput from '@/components/TextInput';
 import FormField from '@/components/FormField';
 import { validateEmailRFC3696 } from '@/utils/validators';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RegistrationFormState {
     login: string;
@@ -25,9 +26,11 @@ export default function RegistrationScreen() {
         },
         mode: 'onSubmit',
     });
+    const { login } = useAuth();
 
     const onSubmit = (data: RegistrationFormState) => {
         console.log(data);
+        login();
     };
 
     return (
