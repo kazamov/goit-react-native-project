@@ -4,7 +4,6 @@ import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { globalColorVariables } from '@/styles/variables';
-import TabBar from '@/components/TabBar';
 import LogoutIcon from '@/icons/LogoutIcon';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -13,7 +12,6 @@ export default function TabLayout() {
 
     return (
         <Tabs
-            tabBar={(props) => <TabBar {...props} />}
             screenOptions={{
                 animation: 'shift',
                 sceneStyle: {
@@ -25,6 +23,11 @@ export default function TabLayout() {
                     borderBottomWidth: 0.5,
                 },
                 headerTitleAlign: 'center',
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    paddingTop: 9,
+                },
+                tabBarItemStyle: { position: 'relative' },
             }}
         >
             <Tabs.Screen
@@ -48,12 +51,17 @@ export default function TabLayout() {
                             <LogoutIcon />
                         </Pressable>
                     ),
+                    tabBarIconStyle: {
+                        position: 'absolute',
+                        right: 0,
+                        top: '50%',
+                        transform: [{ translateY: '-50%' }],
+                    },
                 }}
             />
             <Tabs.Screen
-                name="create-post"
+                name="post"
                 options={{
-                    title: 'Створити публікацію',
                     tabBarIcon: () => (
                         <View style={styles.addButton}>
                             <Ionicons
@@ -63,6 +71,14 @@ export default function TabLayout() {
                             />
                         </View>
                     ),
+                    headerShown: false,
+                    tabBarItemStyle: {
+                        flex: 0,
+                        width: 132,
+                    },
+                    tabBarStyle: {
+                        display: 'none',
+                    },
                 }}
             />
             <Tabs.Screen
@@ -78,6 +94,36 @@ export default function TabLayout() {
                             }
                         />
                     ),
+                    tabBarIconStyle: {
+                        position: 'absolute',
+                        left: 0,
+                        top: '50%',
+                        transform: [{ translateY: '-50%' }],
+                    },
+                }}
+            />
+            <Tabs.Screen
+                name="comments"
+                options={{
+                    headerShown: false,
+                    tabBarItemStyle: {
+                        display: 'none',
+                    },
+                    tabBarStyle: {
+                        display: 'none',
+                    },
+                }}
+            />
+            <Tabs.Screen
+                name="map"
+                options={{
+                    headerShown: false,
+                    tabBarItemStyle: {
+                        display: 'none',
+                    },
+                    tabBarStyle: {
+                        display: 'none',
+                    },
                 }}
             />
         </Tabs>

@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { Slot } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { PostsProvider } from '@/contexts/PostsContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,7 +41,9 @@ export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <AuthProvider>
-                <Slot />
+                <PostsProvider>
+                    <Slot />
+                </PostsProvider>
             </AuthProvider>
         </SafeAreaProvider>
     );

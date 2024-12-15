@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet, ImageProps } from 'react-native';
+import { View, StyleSheet, ImageProps, Pressable } from 'react-native';
 
 import PlusIcon from '@/icons/PlusIcon';
 import CrossIcon from '@/icons/CrossIcon';
@@ -7,7 +7,6 @@ import CrossIcon from '@/icons/CrossIcon';
 import WomanAvatar from '../../assets/woman-avatar.jpg';
 
 import Avatar from './Avatar';
-import IconButton from './IconButton';
 
 export default function ProfileAvatarEdit() {
     const [avatar, setAvatar] = useState<ImageProps['source'] | undefined>();
@@ -15,8 +14,12 @@ export default function ProfileAvatarEdit() {
     return (
         <View style={styles.profilePictureContainer}>
             <Avatar size="big" image={avatar} />
-            <IconButton
-                style={styles.profileIconButton}
+
+            <Pressable
+                style={({ pressed }) => [
+                    styles.iconButton,
+                    pressed && { opacity: 0.7 },
+                ]}
                 onPress={() =>
                     setAvatar((prevState) =>
                         prevState ? undefined : WomanAvatar,
@@ -24,19 +27,21 @@ export default function ProfileAvatarEdit() {
                 }
             >
                 {avatar ? <CrossIcon /> : <PlusIcon />}
-            </IconButton>
+            </Pressable>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    profilePictureContainer: {
-        position: 'relative',
-    },
-    profileIconButton: {
+    iconButton: {
+        width: 25,
+        height: 25,
         position: 'absolute',
         bottom: 14,
         right: 0,
         transform: [{ translateX: '50%' }],
+    },
+    profilePictureContainer: {
+        position: 'relative',
     },
 });

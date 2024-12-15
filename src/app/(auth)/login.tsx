@@ -47,6 +47,7 @@ export default function LoginScreen() {
                                 placeholder="Адреса електронної пошти"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
+                                variant="primary"
                             />
                         </FormField>
                     )}
@@ -67,6 +68,7 @@ export default function LoginScreen() {
                                 placeholder="Пароль"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
+                                variant="primary"
                             />
                         </FormField>
                     )}

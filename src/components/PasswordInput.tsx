@@ -12,7 +12,8 @@ export default function PasswordInput({ style, ...props }: TextInputProps) {
             <TextInput
                 {...props}
                 secureTextEntry={isSecure}
-                style={[styles.input, style]}
+                style={[style]}
+                inputStyle={styles.input}
             />
             <TextButton
                 label={isSecure ? 'Показати' : 'Сховати'}

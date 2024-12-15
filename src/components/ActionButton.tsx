@@ -3,19 +3,32 @@ import { StyleSheet, Pressable, Text } from 'react-native';
 
 interface ButtonProps {
     label: string;
+    disabled?: boolean;
     onPress: () => void;
 }
 
-export default function Button({ label, onPress }: ButtonProps) {
+export default function Button({ label, onPress, disabled }: ButtonProps) {
     return (
         <Pressable
             style={({ pressed }) => [
                 styles.button,
                 pressed && { opacity: 0.8 },
+                disabled && styles.disabled,
             ]}
-            onPress={onPress}
+            onPress={() => {
+                if (!disabled) {
+                    onPress();
+                }
+            }}
         >
-            <Text style={styles.buttonLabel}>{label}</Text>
+            <Text
+                style={[
+                    styles.buttonLabel,
+                    disabled && styles.buttonLabelDisabled,
+                ]}
+            >
+                {label}
+            </Text>
         </Pressable>
     );
 }
@@ -36,5 +49,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto_400Regular',
         letterSpacing: 0,
         lineHeight: 19,
+    },
+    disabled: {
+        backgroundColor: globalColorVariables.gray1,
+    },
+    buttonLabelDisabled: {
+        color: globalColorVariables.gray3,
     },
 });

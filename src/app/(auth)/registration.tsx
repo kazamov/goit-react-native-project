@@ -53,6 +53,7 @@ export default function RegistrationScreen() {
                                 placeholder="Логін"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
+                                variant="primary"
                             />
                         </FormField>
                     )}
@@ -75,6 +76,7 @@ export default function RegistrationScreen() {
                                 inputMode="email"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
+                                variant="primary"
                             />
                         </FormField>
                     )}
@@ -103,6 +105,7 @@ export default function RegistrationScreen() {
                                 placeholder="Пароль"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
+                                variant="primary"
                             />
                         </FormField>
                     )}
