@@ -60,7 +60,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="post"
+                name="create-post"
                 options={{
                     tabBarIcon: () => (
                         <View style={styles.addButton}>
