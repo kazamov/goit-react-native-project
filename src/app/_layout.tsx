@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import {
     useFonts,
     Roboto_300Light,
@@ -6,11 +7,16 @@ import {
     Roboto_700Bold,
 } from '@expo-google-fonts/roboto';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Slot } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Text } from 'react-native';
+
+import store from '@/redux/store/store';
 import { PostsProvider } from '@/contexts/PostsContext';
+import { useAuthStateChange } from '@/hooks/useAuth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,29 +28,35 @@ export default function RootLayout() {
         Roboto_700Bold,
     });
 
-    const { isAuthenticated } = useAuth();
-
     useEffect(() => {
-        if (loaded || error || isAuthenticated !== null) {
+        if (loaded || error) {
             SplashScreen.hideAsync();
         }
-    }, [loaded, error, isAuthenticated]);
+    }, [loaded, error]);
 
     if (!loaded && !error) {
         return null;
     }
 
-    if (isAuthenticated === null) {
-        return null;
-    }
-
     return (
-        <SafeAreaProvider>
-            <AuthProvider>
-                <PostsProvider>
-                    <Slot />
-                </PostsProvider>
-            </AuthProvider>
-        </SafeAreaProvider>
+        <Provider store={store.store}>
+            <PersistGate
+                loading={<Text>Loading...</Text>}
+                persistor={store.persistor}
+            >
+                <SafeAreaProvider>
+                    <PostsProvider>
+                        <AuthListener>
+                            <Slot />
+                        </AuthListener>
+                    </PostsProvider>
+                </SafeAreaProvider>
+            </PersistGate>
+        </Provider>
     );
+}
+
+function AuthListener({ children }: { children: ReactNode }) {
+    useAuthStateChange();
+    return children;
 }

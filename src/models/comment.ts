@@ -1,8 +1,8 @@
-import { User } from './user';
+import { UserRef } from './user';
 
 export interface Comment {
     id: string;
     text: string;
     date: Date;
-    author: User;
+    author: UserRef;
 }

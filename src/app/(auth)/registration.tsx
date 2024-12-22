@@ -9,13 +9,11 @@ import TextButton from '@/components/TextButton';
 import TextInput from '@/components/TextInput';
 import FormField from '@/components/FormField';
 import { validateEmailRFC3696 } from '@/utils/validators';
-import { useAuth } from '@/contexts/AuthContext';
+import { SignupParams } from '@/utils/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { Fragment } from 'react';
 
-interface RegistrationFormState {
-    login: string;
-    email: string;
-    password: string;
-}
+type RegistrationFormState = SignupParams;
 
 export default function RegistrationScreen() {
     const { control, handleSubmit } = useForm<RegistrationFormState>({
@@ -26,15 +24,18 @@ export default function RegistrationScreen() {
         },
         mode: 'onSubmit',
     });
-    const { login } = useAuth();
+    const { signUp } = useAuth();
 
-    const onSubmit = (data: RegistrationFormState) => {
-        console.log(data);
-        login();
+    const onSubmit = async (data: RegistrationFormState) => {
+        try {
+            await signUp(data);
+        } catch (_error) {
+            // TODO: handle error
+        }
     };
 
     return (
-        <>
+        <Fragment>
             <View style={styles.profileContainer}>
                 <ProfileAvatarEdit />
             </View>
@@ -134,7 +135,7 @@ export default function RegistrationScreen() {
                     }}
                 />
             </View>
-        </>
+        </Fragment>
     );
 }
 

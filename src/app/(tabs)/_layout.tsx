@@ -5,10 +5,19 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { globalColorVariables } from '@/styles/variables';
 import LogoutIcon from '@/icons/LogoutIcon';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useCallback } from 'react';
 
 export default function TabLayout() {
-    const { logout } = useAuth();
+    const { signOut } = useAuth();
+
+    const handleLogout = useCallback(async () => {
+        try {
+            await signOut();
+        } catch (_error) {
+            // TODO: handle error
+        }
+    }, [signOut]);
 
     return (
         <Tabs
@@ -47,7 +56,7 @@ export default function TabLayout() {
                         paddingInlineEnd: 16,
                     },
                     headerRight: () => (
-                        <Pressable onPress={logout}>
+                        <Pressable onPress={handleLogout}>
                             <LogoutIcon />
                         </Pressable>
                     ),

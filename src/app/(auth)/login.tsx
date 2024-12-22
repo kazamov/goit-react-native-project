@@ -1,18 +1,17 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { Controller, useForm } from 'react-hook-form';
 
 import ActionButton from '@/components/ActionButton';
 import PasswordInput from '@/components/PasswordInput';
 import TextButton from '@/components/TextButton';
 import TextInput from '@/components/TextInput';
-import { Controller, useForm } from 'react-hook-form';
 import FormField from '@/components/FormField';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
+import { SigninParams } from '@/utils/auth';
+import { Fragment } from 'react';
 
-interface LoginFormState {
-    email: string;
-    password: string;
-}
+type LoginFormState = SigninParams;
 
 export default function LoginScreen() {
     const { control, handleSubmit } = useForm<LoginFormState>({
@@ -23,15 +22,18 @@ export default function LoginScreen() {
         mode: 'onSubmit',
     });
 
-    const { login } = useAuth();
+    const { signIn } = useAuth();
 
-    const onSubmit = (data: LoginFormState) => {
-        console.log(data);
-        login();
+    const onSubmit = async (data: LoginFormState) => {
+        try {
+            await signIn(data);
+        } catch (_error) {
+            // TODO: handle error
+        }
     };
 
     return (
-        <>
+        <Fragment>
             <Text style={styles.title}>Увійти</Text>
             <View style={styles.inputsContainer}>
                 <Controller
@@ -87,7 +89,7 @@ export default function LoginScreen() {
                     }}
                 />
             </View>
-        </>
+        </Fragment>
     );
 }
 
