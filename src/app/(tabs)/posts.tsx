@@ -1,17 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { StyleSheet, View, SectionList } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 
-import { usePosts } from '@/contexts/PostsContext';
-import Avatar from '@/components/Avatar';
 import PostCard from '@/components/PostCard';
-import { globalColorVariables } from '@/styles/variables';
 import { Post } from '@/models/post';
 
-import { useUser } from '@/hooks/useUser';
+import { usePosts } from '@/hooks/usePosts';
+import { useCallback, useMemo } from 'react';
+import PostAvatar from '@/components/PostAvatar';
 
 export default function PostsScreen() {
-    const user = useUser();
-    const { posts } = usePosts();
+    const { posts, fetchPosts } = usePosts();
+
+    const groupedPosts = useMemo(() => {
+        if (!posts) {
+            return [];
+        }
+
+        const grouped: Record<string, Post[]> = {};
+
+        for (const item of posts) {
+            const key = item.authorId;
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+            grouped[key].push(item);
+        }
+
+        return Object.entries(grouped).map(([authorId, data]) => ({
+            authorId,
+            data,
+        }));
+    }, [posts]);
 
     const handleCommentsPress = (postId: string) => {
         router.push({ pathname: '/comments', params: { postId } });
@@ -26,29 +45,34 @@ export default function PostsScreen() {
         });
     };
 
-    if (!user) {
-        return null;
-    }
+    useFocusEffect(
+        useCallback(() => {
+            fetchPosts();
+        }, [fetchPosts]),
+    );
 
     return (
         <View style={styles.screen}>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Avatar size="normal" image={user.photoURL} />
-                <View style={{ justifyContent: 'center' }}>
-                    <Text style={styles.avatarName}>{user.displayName}</Text>
-                    <Text style={styles.avatarEmail}>{user.email}</Text>
-                </View>
-            </View>
-
-            {posts.length > 0 &&
-                posts.map((post) => (
-                    <PostCard
-                        key={post.id}
-                        model={post}
-                        onCommentsPress={handleCommentsPress}
-                        onPlacePress={handlePlacePress}
-                    />
-                ))}
+            {posts && posts.length > 0 && (
+                <SectionList
+                    sections={groupedPosts}
+                    renderItem={({ item }) => (
+                        <PostCard
+                            key={item.id}
+                            model={item}
+                            onCommentsPress={handleCommentsPress}
+                            onPlacePress={handlePlacePress}
+                        />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    renderSectionHeader={({ section: { authorId } }) => (
+                        <View style={styles.sectionHeader}>
+                            <PostAvatar authorId={authorId} />
+                        </View>
+                    )}
+                    style={{ borderRadius: 8 }}
+                />
+            )}
         </View>
     );
 }
@@ -60,18 +84,10 @@ const styles = StyleSheet.create({
         paddingInline: 16,
         gap: 32,
     },
-    avatarName: {
-        fontFamily: 'Roboto_700Bold',
-        fontSize: 13,
-        lineHeight: 15,
-        letterSpacing: 0,
-        color: globalColorVariables.inputText,
-    },
-    avatarEmail: {
-        fontFamily: 'Roboto_400Regular',
-        fontSize: 11,
-        lineHeight: 13,
-        letterSpacing: 0,
-        color: 'rgba(33,33,33,0.8)',
+    sectionHeader: {
+        paddingBlockStart: 16,
+        paddingBlockEnd: 32,
+        backgroundColor: `rgba(255, 255, 255, 0.7)`,
+        borderRadius: 8,
     },
 });

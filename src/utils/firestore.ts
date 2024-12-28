@@ -1,4 +1,14 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    query,
+    getDocs,
+    orderBy,
+    limit,
+    addDoc,
+} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import { db, storage } from '@/firebase-config';
@@ -15,22 +25,19 @@ export const addUser = async (userId: string, userData: UserRef) => {
 
 export const addPost = async (userId: string, post: Post) => {
     try {
-        await setDoc(
-            doc(db, 'posts', userId),
-            { userId, posts: [post] },
-            { merge: true },
-        );
+        // Add a new document with a generated id.
+        await addDoc(collection(db, 'posts'), post);
     } catch (error) {
         console.error('Error adding post:', error);
     }
 };
 
-export const getUser = async (userId: string) => {
+export const getUser = async (userId: string): Promise<UserRef | null> => {
     const docRef = doc(db, 'users', userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        return docSnap.data();
+        return docSnap.data() as UserRef;
     } else {
         return null;
     }
@@ -47,6 +54,16 @@ export const getPosts = async (userId: string) => {
     }
 };
 
+export const getAllPosts = async () => {
+    const collectionRef = collection(db, 'posts');
+    const q = query(collectionRef, orderBy('authorId'), limit(30));
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id } as Post;
+    });
+};
+
 export const updateUser = async (uid: string, data: UserRef) => {
     try {
         await setDoc(doc(db, 'users', uid), data, { merge: true });
@@ -55,29 +72,26 @@ export const updateUser = async (uid: string, data: UserRef) => {
     }
 };
 
-export const uploadImageToStore = async (userId: User['uid'], uri: string) => {
+export const uploadImageToStore = async (
+    folder: string,
+    userId: User['uid'],
+    uri: string,
+) => {
     // Convert image to a Blob
     try {
-        console.log('Fetch image');
         const response = await fetch(uri);
-        console.log('Get image blob');
         const file = await response.blob();
         const fileName = uri.split('/').pop() as string;
         const fileType = file.type;
 
-        console.log('Create ref');
-        const imageRef = ref(storage, `profilePhotos/${userId}/${fileName}`);
-        console.log('Upload image');
-        const result = await uploadBytes(imageRef, file, {
+        const imageRef = ref(storage, `${folder}/${userId}/${fileName}`);
+        await uploadBytes(imageRef, file, {
             contentType: fileType,
         });
 
-        console.log('Get image URL');
-        const imageUrl = await getDownloadURL(imageRef);
-        console.log('Upload result:', result);
-        return imageUrl;
+        return getDownloadURL(imageRef);
     } catch (error) {
-        console.error('Error converting image to blob:', error);
+        console.error('Error when uploading image to the store:', error);
         return null;
     }
 };

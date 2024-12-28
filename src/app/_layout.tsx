@@ -15,7 +15,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Text } from 'react-native';
 
 import store from '@/redux/store/store';
-import { PostsProvider } from '@/contexts/PostsContext';
 import { useAuthStateChange } from '@/hooks/useAuth';
 
 SplashScreen.preventAutoHideAsync();
@@ -45,11 +44,9 @@ export default function RootLayout() {
                 persistor={store.persistor}
             >
                 <SafeAreaProvider>
-                    <PostsProvider>
-                        <AuthListener>
-                            <Slot />
-                        </AuthListener>
-                    </PostsProvider>
+                    <AuthListener>
+                        <Slot />
+                    </AuthListener>
                 </SafeAreaProvider>
             </PersistGate>
         </Provider>

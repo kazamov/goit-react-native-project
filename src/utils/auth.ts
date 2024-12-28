@@ -36,10 +36,25 @@ export const signUp = async ({
         );
         const user = credentials.user;
 
+        await Promise.all([
+            updateProfile(user, {
+                displayName: login,
+            }),
+            addUser(user.uid, {
+                uid: user.uid,
+                displayName: login,
+                email: user.email,
+            } satisfies UserRef),
+        ]);
+
         let avatarUrl: string | null = null;
         if (photoURL) {
             try {
-                avatarUrl = await uploadImageToStore(user.uid, photoURL);
+                avatarUrl = await uploadImageToStore(
+                    'profile-photos',
+                    user.uid,
+                    photoURL,
+                );
             } catch (error) {
                 console.error('Avatar upload error:', error);
             }
@@ -47,13 +62,11 @@ export const signUp = async ({
 
         await Promise.all([
             updateProfile(user, {
-                displayName: login,
                 photoURL: avatarUrl,
             }),
             addUser(user.uid, {
                 uid: user.uid,
                 photoURL: avatarUrl ?? null,
-                displayName: login,
             } satisfies UserRef),
         ]);
 
@@ -107,5 +120,14 @@ export function transformFbUser(user: FbUser): User {
         displayName: user.displayName,
         photoURL: user.photoURL,
         emailVerified: user.emailVerified,
+    };
+}
+
+export function transformFbUserToUserRef(user: FbUser): UserRef {
+    return {
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        email: user.email,
     };
 }

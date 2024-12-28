@@ -15,7 +15,7 @@ const pickImage = async () => {
     const result = await launchImageLibraryAsync({
         mediaTypes: ['images'],
         allowsEditing: true,
-        quality: 0.5,
+        quality: 0.3,
         allowsMultipleSelection: false,
     });
 

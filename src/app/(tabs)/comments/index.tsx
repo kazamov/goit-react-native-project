@@ -1,6 +1,6 @@
 import CommentCard from '@/components/CommentCard';
 import TextInput from '@/components/TextInput';
-import { usePosts } from '@/contexts/PostsContext';
+import { usePosts } from '@/hooks/usePosts';
 import ArrowLeft from '@/icons/ArrowLeft';
 import ArrowUpIcon from '@/icons/ArrowUp';
 import { Post } from '@/models/post';
@@ -11,7 +11,7 @@ import {
     useFocusEffect,
     useLocalSearchParams,
 } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, Fragment } from 'react';
 import {
     Pressable,
     View,
@@ -27,7 +27,7 @@ export default function CommentsScreen() {
     const { posts } = usePosts();
     const [comment, setComment] = useState('');
 
-    const post = posts.find((post) => post.id === postId) as Post;
+    const post = posts?.find((post) => post.id === postId) as Post;
 
     const handleCommentSubmit = useCallback(() => {
         console.log('Comment submitted:', comment);
@@ -58,44 +58,55 @@ export default function CommentsScreen() {
                     headerTitleAlign: 'center',
                 }}
             />
-            <Image source={post.photo} style={styles.photo} />
-            <ScrollView style={styles.commentsContainer}>
-                {post.comments.length > 0 ? (
-                    post.comments.map((comment) => {
-                        return (
-                            <CommentCard
-                                key={comment.id}
-                                model={comment}
-                                avatarPosition="left"
-                            />
-                        );
-                    })
-                ) : (
-                    <View>
-                        <Text>Ще немає коментарів</Text>
-                    </View>
-                )}
-            </ScrollView>
-            <SafeAreaView edges={['bottom']} style={{ position: 'relative' }}>
-                <View>
-                    <TextInput
-                        value={comment}
-                        onChangeText={(text) => setComment(text)}
-                        variant="primary"
-                        placeholder="Коментувати..."
-                        inputStyle={{ borderRadius: 100, paddingInlineEnd: 50 }}
-                    />
-                    <Pressable
-                        style={({ pressed }) => [
-                            styles.pushCommentButton,
-                            pressed && { opacity: 0.8 },
-                        ]}
-                        onPress={handleCommentSubmit}
+            {!post && <Text>Пост не знайдено</Text>}
+            {post && (
+                <Fragment>
+                    <Image source={{ uri: post.photo }} style={styles.photo} />
+                    <ScrollView style={styles.commentsContainer}>
+                        {post.comments.length > 0 ? (
+                            post.comments.map((comment) => {
+                                return (
+                                    <CommentCard
+                                        key={comment.id}
+                                        model={comment}
+                                        avatarPosition="left"
+                                    />
+                                );
+                            })
+                        ) : (
+                            <View>
+                                <Text>Ще немає коментарів</Text>
+                            </View>
+                        )}
+                    </ScrollView>
+                    <SafeAreaView
+                        edges={['bottom']}
+                        style={{ position: 'relative' }}
                     >
-                        <ArrowUpIcon />
-                    </Pressable>
-                </View>
-            </SafeAreaView>
+                        <View>
+                            <TextInput
+                                value={comment}
+                                onChangeText={(text) => setComment(text)}
+                                variant="primary"
+                                placeholder="Коментувати..."
+                                inputStyle={{
+                                    borderRadius: 100,
+                                    paddingInlineEnd: 50,
+                                }}
+                            />
+                            <Pressable
+                                style={({ pressed }) => [
+                                    styles.pushCommentButton,
+                                    pressed && { opacity: 0.8 },
+                                ]}
+                                onPress={handleCommentSubmit}
+                            >
+                                <ArrowUpIcon />
+                            </Pressable>
+                        </View>
+                    </SafeAreaView>
+                </Fragment>
+            )}
         </View>
     );
 }

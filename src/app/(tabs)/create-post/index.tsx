@@ -29,8 +29,10 @@ import TextInput from '@/components/TextInput';
 import MapPinIcon from '@/icons/MapPinIcon';
 import CameraIcon from '@/icons/CameraIcon';
 import FormField from '@/components/FormField';
-import { usePosts } from '@/contexts/PostsContext';
 import { Post } from '@/models/post';
+import { uploadImageToStore } from '@/utils/firestore';
+import { useUser } from '@/hooks/useUser';
+import { usePosts } from '@/hooks/usePosts';
 
 interface CreatePostFormState {
     title: string;
@@ -38,6 +40,7 @@ interface CreatePostFormState {
 }
 
 export default function CreatePostScreen() {
+    const user = useUser();
     const [cameraPermission, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermission, requestMediaLibraryPermission] =
         useMediaLibraryPermissions();
@@ -60,20 +63,31 @@ export default function CreatePostScreen() {
         async (data: CreatePostFormState) => {
             const location = await getCurrentPositionAsync();
 
+            const photoUrl = await uploadImageToStore(
+                'posts-images',
+                user?.uid as string,
+                photo?.uri as string,
+            );
+
+            if (photoUrl === null) {
+                throw new Error('Cannot upload image');
+            }
+
             const newPost: Post = {
                 ...data,
                 id: Date.now().toString(),
                 location,
-                photo: photo as CameraCapturedPicture,
+                photo: photoUrl,
                 comments: [],
                 likes: 0,
+                authorId: user?.uid as string,
             };
 
-            addPost(newPost);
+            await addPost(user?.uid as string, newPost);
 
             router.push('/posts');
         },
-        [addPost, photo],
+        [addPost, photo, user?.uid],
     );
 
     const takePhoto = useCallback(async () => {

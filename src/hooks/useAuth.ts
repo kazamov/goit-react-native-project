@@ -4,6 +4,7 @@ import {
     selectUserInfo,
     setUserInfo,
 } from '@/redux/reducers/user-slice';
+import { addUser } from '@/redux/reducers/users-slice';
 import {
     SigninParams,
     SignupParams,
@@ -11,8 +12,9 @@ import {
     signIn,
     signOut,
     transformFbUser,
+    transformFbUserToUserRef,
 } from '@/utils/auth';
-import { router } from 'expo-router';
+import { Href, router, usePathname } from 'expo-router';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,6 +33,7 @@ export function useAuth(): AuthHookResult {
             async (params: SignupParams) => {
                 const user = await signUp(params);
                 dispatch(setUserInfo(user));
+                dispatch(addUser(user));
             },
             [dispatch],
         ),
@@ -38,6 +41,7 @@ export function useAuth(): AuthHookResult {
             async (params: SigninParams) => {
                 const user = await signIn(params);
                 dispatch(setUserInfo(user));
+                dispatch(addUser(user));
                 return user;
             },
             [dispatch],
@@ -52,11 +56,13 @@ export function useAuth(): AuthHookResult {
 export function useAuthStateChange() {
     const dispatch = useDispatch();
     const userInfo = useSelector(selectUserInfo);
+    const pathname = usePathname();
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 dispatch(setUserInfo(transformFbUser(user)));
+                dispatch(addUser(transformFbUserToUserRef(user)));
             } else {
                 dispatch(clearUserInfo());
             }
@@ -71,10 +77,15 @@ export function useAuthStateChange() {
             return;
         }
 
+        const authPages: Href[] = ['/login', '/registration'];
         if (userInfo) {
-            router.navigate('/(tabs)/posts');
+            if (authPages.concat(['/']).includes(pathname as Href)) {
+                router.navigate('/posts');
+            }
         } else {
-            router.navigate('/(auth)/login');
+            if (!authPages.includes(pathname as Href)) {
+                router.navigate('/login');
+            }
         }
-    }, [userInfo]);
+    }, [pathname, userInfo]);
 }

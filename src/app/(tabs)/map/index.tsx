@@ -1,4 +1,4 @@
-import { usePosts } from '@/contexts/PostsContext';
+import { usePosts } from '@/hooks/usePosts';
 import ArrowLeft from '@/icons/ArrowLeft';
 import { Post } from '@/models/post';
 import { globalColorVariables } from '@/styles/variables';
@@ -13,7 +13,7 @@ export default function MapScreen() {
     const { posts } = usePosts();
 
     const post = useMemo(
-        () => posts.find((post) => post.id === postId) as Post,
+        () => posts?.find((post) => post.id === postId) as Post,
         [postId, posts],
     );
     const { location } = post;
@@ -56,12 +56,12 @@ export default function MapScreen() {
                     }}
                 >
                     <Marker
-                        title="I am here"
+                        title={post.place}
                         coordinate={{
                             latitude: location.coords.latitude,
                             longitude: location.coords.longitude,
                         }}
-                        description="Hello"
+                        description={post.title}
                     />
                 </MapView>
             </SafeAreaView>

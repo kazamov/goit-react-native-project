@@ -18,10 +18,7 @@ export default function PostCard({
 }: PostCardProps) {
     return (
         <View style={styles.postCard}>
-            <Image
-                source={{ uri: model.photo.uri }}
-                style={styles.postCardImage}
-            />
+            <Image source={{ uri: model.photo }} style={styles.postCardImage} />
             <Text style={styles.postCardTitle}>{model.title}</Text>
             <View
                 style={{
