@@ -1,9 +1,9 @@
-import { View, StyleSheet, Image, ImageProps } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 
 import { globalColorVariables } from '@/styles/variables';
 
 interface AvatarProps {
-    image?: ImageProps['source'];
+    image: string | null;
     size: 'big' | 'normal' | 'small';
 }
 
@@ -19,7 +19,7 @@ export default function Avatar({ image, size }: AvatarProps) {
         >
             {image ? (
                 <Image
-                    source={image}
+                    source={{ uri: image ?? undefined }}
                     style={[
                         styles.avatar,
                         localSize === 'big' && styles.big,

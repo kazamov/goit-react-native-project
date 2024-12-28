@@ -21,7 +21,7 @@ export default function CommentCard({
                     : styles.avatarRightLayout,
             ]}
         >
-            <Avatar image={{ uri: model.author.avatarUri }} size="small" />
+            <Avatar image={model.author.photoURL} size="small" />
             <View
                 style={[
                     styles.comment,

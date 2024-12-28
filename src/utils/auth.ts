@@ -8,13 +8,13 @@ import {
 } from 'firebase/auth';
 import { User, UserRef } from '@/models/user';
 
-import { addUser } from './firestore';
+import { addUser, uploadImageToStore } from './firestore';
 
 export interface SignupParams {
     email: string;
     password: string;
     login: string;
-    photoURL: string;
+    photoURL?: string;
 }
 
 export interface SigninParams {
@@ -26,7 +26,8 @@ export const signUp = async ({
     email,
     password,
     login,
-}: SignupParams): Promise<void> => {
+    photoURL,
+}: SignupParams): Promise<User> => {
     try {
         const credentials = await createUserWithEmailAndPassword(
             auth,
@@ -35,14 +36,28 @@ export const signUp = async ({
         );
         const user = credentials.user;
 
+        let avatarUrl: string | null = null;
+        if (photoURL) {
+            try {
+                avatarUrl = await uploadImageToStore(user.uid, photoURL);
+            } catch (error) {
+                console.error('Avatar upload error:', error);
+            }
+        }
+
         await Promise.all([
             updateProfile(user, {
                 displayName: login,
+                photoURL: avatarUrl,
             }),
             addUser(user.uid, {
                 uid: user.uid,
+                photoURL: avatarUrl ?? null,
+                displayName: login,
             } satisfies UserRef),
         ]);
+
+        return transformFbUser(auth.currentUser as FbUser);
     } catch (error) {
         console.log('Signup error:', error);
         throw error;

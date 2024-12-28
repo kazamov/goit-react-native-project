@@ -1,14 +1,9 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import {
-    getDownloadURL,
-    ref,
-    StorageReference,
-    uploadBytes,
-} from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import { db, storage } from '@/firebase-config';
 import { Post } from '@/models/post';
-import { UserRef } from '@/models/user';
+import { User, UserRef } from '@/models/user';
 
 export const addUser = async (userId: string, userData: UserRef) => {
     try {
@@ -60,22 +55,29 @@ export const updateUser = async (uid: string, data: UserRef) => {
     }
 };
 
-export const uploadImage = async (
-    userId: string,
-    file: any,
-    fileName: string,
-) => {
+export const uploadImageToStore = async (userId: User['uid'], uri: string) => {
+    // Convert image to a Blob
     try {
-        const imageRef = ref(storage, `profilePhotos/${userId}/${fileName}`);
-        await uploadBytes(imageRef, file);
-        return getImageUrl(imageRef);
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        throw error;
-    }
-};
+        console.log('Fetch image');
+        const response = await fetch(uri);
+        console.log('Get image blob');
+        const file = await response.blob();
+        const fileName = uri.split('/').pop() as string;
+        const fileType = file.type;
 
-export const getImageUrl = async (imageRef: StorageReference) => {
-    const url = await getDownloadURL(imageRef);
-    return url;
+        console.log('Create ref');
+        const imageRef = ref(storage, `profilePhotos/${userId}/${fileName}`);
+        console.log('Upload image');
+        const result = await uploadBytes(imageRef, file, {
+            contentType: fileType,
+        });
+
+        console.log('Get image URL');
+        const imageUrl = await getDownloadURL(imageRef);
+        console.log('Upload result:', result);
+        return imageUrl;
+    } catch (error) {
+        console.error('Error converting image to blob:', error);
+        return null;
+    }
 };

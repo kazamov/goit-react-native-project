@@ -11,7 +11,8 @@ import FormField from '@/components/FormField';
 import { validateEmailRFC3696 } from '@/utils/validators';
 import { SignupParams } from '@/utils/auth';
 import { useAuth } from '@/hooks/useAuth';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import { ImagePickerAsset } from 'expo-image-picker';
 
 type RegistrationFormState = SignupParams;
 
@@ -24,11 +25,13 @@ export default function RegistrationScreen() {
         },
         mode: 'onSubmit',
     });
+    const [avatar, setAvatar] = useState<ImagePickerAsset | undefined>();
+
     const { signUp } = useAuth();
 
     const onSubmit = async (data: RegistrationFormState) => {
         try {
-            await signUp(data);
+            await signUp({ ...data, photoURL: avatar?.uri });
         } catch (_error) {
             // TODO: handle error
         }
@@ -37,7 +40,7 @@ export default function RegistrationScreen() {
     return (
         <Fragment>
             <View style={styles.profileContainer}>
-                <ProfileAvatarEdit />
+                <ProfileAvatarEdit avatar={avatar} onAvatarChange={setAvatar} />
             </View>
             <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.inputsContainer}>

@@ -7,9 +7,10 @@ import PostCard from '@/components/PostCard';
 import { globalColorVariables } from '@/styles/variables';
 import { Post } from '@/models/post';
 
-import WomanAvatar from '../../../assets/woman-avatar.jpg';
+import { useUser } from '@/hooks/useUser';
 
 export default function PostsScreen() {
+    const user = useUser();
     const { posts } = usePosts();
 
     const handleCommentsPress = (postId: string) => {
@@ -25,13 +26,17 @@ export default function PostsScreen() {
         });
     };
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <View style={styles.screen}>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Avatar size="normal" image={WomanAvatar} />
+                <Avatar size="normal" image={user.photoURL} />
                 <View style={{ justifyContent: 'center' }}>
-                    <Text style={styles.avatarName}>Natali Romanova</Text>
-                    <Text style={styles.avatarEmail}>email@example.com</Text>
+                    <Text style={styles.avatarName}>{user.displayName}</Text>
+                    <Text style={styles.avatarEmail}>{user.email}</Text>
                 </View>
             </View>
 

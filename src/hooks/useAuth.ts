@@ -27,9 +27,13 @@ export function useAuth(): AuthHookResult {
     const dispatch = useDispatch();
 
     return {
-        signUp: useCallback(async (params: SignupParams) => {
-            await signUp(params);
-        }, []),
+        signUp: useCallback(
+            async (params: SignupParams) => {
+                const user = await signUp(params);
+                dispatch(setUserInfo(user));
+            },
+            [dispatch],
+        ),
         signIn: useCallback(
             async (params: SigninParams) => {
                 const user = await signIn(params);

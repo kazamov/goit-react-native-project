@@ -10,4 +10,6 @@ export interface User {
 
 export interface UserRef {
     uid: User['uid'];
+    photoURL: User['photoURL'];
+    displayName: FbUser['displayName'];
 }
