@@ -3,6 +3,6 @@ import { User } from './user';
 export interface Comment {
     id: string;
     text: string;
-    date: Date;
+    date: string;
     authorId: User['uid'];
 }

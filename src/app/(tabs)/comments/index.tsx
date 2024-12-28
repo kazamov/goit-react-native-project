@@ -1,9 +1,9 @@
 import CommentCard from '@/components/CommentCard';
 import TextInput from '@/components/TextInput';
-import { usePosts } from '@/hooks/usePosts';
+import { useUser } from '@/hooks/useUser';
 import ArrowLeft from '@/icons/ArrowLeft';
 import ArrowUpIcon from '@/icons/ArrowUp';
-import { Post } from '@/models/post';
+import { Comment } from '@/models/comment';
 import { globalColorVariables } from '@/styles/variables';
 import {
     router,
@@ -21,25 +21,43 @@ import {
     ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useComments } from '@/hooks/useComments';
+import { useSelector } from 'react-redux';
+import { PostsSlice, selectPost } from '@/redux/reducers/posts-slice';
 
 export default function CommentsScreen() {
-    const { postId } = useLocalSearchParams();
-    const { posts } = usePosts();
     const [comment, setComment] = useState('');
 
-    const post = posts?.find((post) => post.id === postId) as Post;
+    const { postId } = useLocalSearchParams();
+    const user = useUser();
+    const post = useSelector((state) =>
+        selectPost(state as { posts: PostsSlice }, postId as string),
+    );
+    const { comments, fetchComments, addComment } = useComments(
+        postId as string,
+    );
 
     const handleCommentSubmit = useCallback(() => {
-        console.log('Comment submitted:', comment);
-        setComment('');
-    }, [comment]);
+        addComment(
+            postId as string,
+            {
+                authorId: user?.uid as string,
+                text: comment,
+                id: Date.now().toString(),
+            } as Comment,
+        ).then(() => {
+            setComment('');
+        });
+    }, [addComment, comment, postId, user?.uid]);
 
     useFocusEffect(
         useCallback(() => {
+            fetchComments(postId as string);
+
             return () => {
                 setComment('');
             };
-        }, []),
+        }, [fetchComments, postId]),
     );
 
     return (
@@ -62,14 +80,21 @@ export default function CommentsScreen() {
             {post && (
                 <Fragment>
                     <Image source={{ uri: post.photo }} style={styles.photo} />
-                    <ScrollView style={styles.commentsContainer}>
-                        {post.comments.length > 0 ? (
-                            post.comments.map((comment) => {
+                    <ScrollView
+                        style={{ flex: 1 }}
+                        contentContainerStyle={styles.commentsContainer}
+                    >
+                        {comments && comments.length > 0 ? (
+                            comments.map((comment) => {
                                 return (
                                     <CommentCard
                                         key={comment.id}
                                         model={comment}
-                                        avatarPosition="left"
+                                        avatarPosition={
+                                            comment.authorId === user?.uid
+                                                ? 'right'
+                                                : 'left'
+                                        }
                                     />
                                 );
                             })

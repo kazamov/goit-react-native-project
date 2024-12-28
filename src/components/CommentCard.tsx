@@ -2,6 +2,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Comment } from '@/models/comment';
 import Avatar from './Avatar';
 import { globalColorVariables } from '@/styles/variables';
+import { useUserRef } from '@/hooks/useUserRef';
 
 interface CommentCardProps {
     model: Comment;
@@ -12,6 +13,7 @@ export default function CommentCard({
     model,
     avatarPosition,
 }: CommentCardProps) {
+    const { user } = useUserRef(model.authorId);
     return (
         <View
             style={[
@@ -21,7 +23,7 @@ export default function CommentCard({
                     : styles.avatarRightLayout,
             ]}
         >
-            <Avatar image={null} size="small" />
+            <Avatar image={user?.photoURL ?? null} size="small" />
             <View
                 style={[
                     styles.comment,
@@ -39,7 +41,7 @@ export default function CommentCard({
                             : styles.dateLeft,
                     ]}
                 >
-                    {model.date.toLocaleDateString()}
+                    {model.date}
                 </Text>
             </View>
         </View>
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         backgroundColor: 'rgba(0, 0, 0, 0.03)',
         padding: 16,
+        flex: 1,
     },
     commentLeftLayout: {
         borderTopRightRadius: 0,

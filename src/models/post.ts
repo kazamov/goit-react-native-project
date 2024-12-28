@@ -1,6 +1,5 @@
 import { LocationObject } from 'expo-location';
 
-import { Comment } from './comment';
 import { User } from 'firebase/auth';
 
 export interface Post {
@@ -9,7 +8,7 @@ export interface Post {
     photo: string;
     title: string;
     place: string;
-    comments: Comment[];
+    commentsCount: number;
     likes: number;
     authorId: User['uid'];
 }

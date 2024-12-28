@@ -1,7 +1,7 @@
 import { Post } from '@/models/post';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface PostsSlice {
+export interface PostsSlice {
     posts: Post[] | null;
 }
 
@@ -23,14 +23,25 @@ const postsSlice = createSlice({
         setPosts(state, action: PayloadAction<Post[]>) {
             state.posts = action.payload;
         },
+        incrementCommentsCount(state, action: PayloadAction<string>) {
+            const post = state.posts?.find(
+                (post) => post.id === action.payload,
+            );
+            if (post) {
+                post.commentsCount++;
+            }
+        },
     },
     selectors: {
         selectPosts: (state) => state.posts,
+        selectPost: (state, postId: string) => {
+            return state.posts?.find((post) => post.id === postId) ?? null;
+        },
     },
 });
 
-export const { addPost, setPosts } = postsSlice.actions;
+export const { addPost, setPosts, incrementCommentsCount } = postsSlice.actions;
 
-export const { selectPosts } = postsSlice.selectors;
+export const { selectPosts, selectPost } = postsSlice.selectors;
 
 export default postsSlice.reducer;

@@ -32,7 +32,7 @@ export default function PostCard({
                 >
                     <CommentIcon />
                     <Text style={{ color: globalColorVariables.gray3 }}>
-                        {model.comments.length}
+                        {model.commentsCount}
                     </Text>
                 </Pressable>
                 <Pressable

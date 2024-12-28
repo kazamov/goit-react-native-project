@@ -78,12 +78,12 @@ export default function CreatePostScreen() {
                 id: Date.now().toString(),
                 location,
                 photo: photoUrl,
-                comments: [],
+                commentsCount: 0,
                 likes: 0,
                 authorId: user?.uid as string,
             };
 
-            await addPost(user?.uid as string, newPost);
+            await addPost(newPost);
 
             router.push('/posts');
         },

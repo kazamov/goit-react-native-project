@@ -1,5 +1,4 @@
 import { Post } from '@/models/post';
-import { User } from '@/models/user';
 import { selectPosts, setPosts } from '@/redux/reducers/posts-slice';
 import { addPost, getAllPosts } from '@/utils/firestore';
 import { useCallback } from 'react';
@@ -8,7 +7,7 @@ import { addPost as addPostAction } from '@/redux/reducers/posts-slice';
 
 interface PostsHookResult {
     posts: Post[] | null;
-    addPost: (userId: User['uid'], post: Post) => Promise<void>;
+    addPost: (post: Post) => Promise<void>;
     fetchPosts: () => Promise<void>;
 }
 
@@ -19,8 +18,8 @@ export function usePosts(): PostsHookResult {
     return {
         posts,
         addPost: useCallback(
-            async (userId: User['uid'], post: Post) => {
-                await addPost(userId, post);
+            async (post) => {
+                await addPost(post);
                 dispatch(addPostAction(post));
             },
             [dispatch],
