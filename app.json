@@ -4,6 +4,7 @@
         "name": "go-it-project",
         "slug": "go-it-project",
         "version": "1.0.0",
+        "owner": "zakir.nuriiev",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "light",
