@@ -1,45 +1,53 @@
 {
-    "expo": {
-        "scheme": "goitproject",
-        "name": "go-it-project",
-        "slug": "go-it-project",
-        "version": "1.0.0",
-        "owner": "zakir.nuriiev",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "light",
-        "newArchEnabled": true,
-        "splash": {
-            "image": "./assets/splash-icon.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.zakir.nuriiev.goitproject"
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            },
-            "softwareKeyboardLayoutMode": "pan",
-            "package": "com.zakir.nuriiev.goitproject"
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
-        "plugins": ["expo-router"],
-        "experiments": {
-            "typedRoutes": true
-        },
-        "extra": {
-            "router": {
-                "origin": false
-            },
-            "eas": {
-                "projectId": "3b1bd6f9-c3aa-4aef-a8b5-1c9b9295c655"
-            }
-        }
+  "expo": {
+    "scheme": "goitproject",
+    "name": "go-it-project",
+    "slug": "go-it-project",
+    "version": "1.0.0",
+    "owner": "zakir.nuriiev",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zakir.nuriiev.goitproject"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.zakir.nuriiev.goitproject"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3b1bd6f9-c3aa-4aef-a8b5-1c9b9295c655"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3b1bd6f9-c3aa-4aef-a8b5-1c9b9295c655"
     }
+  }
 }
