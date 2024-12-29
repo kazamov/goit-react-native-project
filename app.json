@@ -14,14 +14,16 @@
             "backgroundColor": "#ffffff"
         },
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "com.zakir.nuriiev.goitproject"
         },
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "softwareKeyboardLayoutMode": "pan"
+            "softwareKeyboardLayoutMode": "pan",
+            "package": "com.zakir.nuriiev.goitproject"
         },
         "web": {
             "favicon": "./assets/favicon.png"
@@ -29,6 +31,14 @@
         "plugins": ["expo-router"],
         "experiments": {
             "typedRoutes": true
+        },
+        "extra": {
+            "router": {
+                "origin": false
+            },
+            "eas": {
+                "projectId": "3b1bd6f9-c3aa-4aef-a8b5-1c9b9295c655"
+            }
         }
     }
 }
