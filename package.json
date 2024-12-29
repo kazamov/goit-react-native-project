@@ -15,7 +15,8 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
         "check-format": "prettier --check .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "eas-build-pre-install": "corepack enable && yarn set version 4"
     },
     "dependencies": {
         "@expo-google-fonts/roboto": "^0.2.3",
